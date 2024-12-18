@@ -7,3 +7,5 @@ W
 'contracts/financial-access-control.clar,9/a/9a2cc004c537c34a7fba5f47a4761315b02e5c27
 V
 &tests/financial-access-control.test.ts,3/6/36ca4ae476ac064ff20484189ac49e1548eb6cec
+U
+%contracts/verifiable-credentials.clar,3/f/3f901d883734578346aaacf08c6394ae675f109d
