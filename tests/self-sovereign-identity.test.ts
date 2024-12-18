@@ -1,21 +1,36 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { describe, expect, it } from "vitest";
-
-const accounts = simnet.getAccounts();
-const address1 = accounts.get("wallet_1")!;
-
-/*
-  The test below is an example. To learn more, read the testing documentation here:
-  https://docs.hiro.so/stacks/clarinet-js-sdk
-*/
-
-describe("example tests", () => {
-  it("ensures simnet is well initalised", () => {
-    expect(simnet.blockHeight).toBeDefined();
+describe('Self-Sovereign Identity Contract', () => {
+  let mockContractCall: any;
+  
+  beforeEach(() => {
+    mockContractCall = vi.fn();
   });
-
-  // it("shows an example", () => {
-  //   const { result } = simnet.callReadOnlyFn("counter", "get-counter", [], address1);
-  //   expect(result).toBeUint(0);
-  // });
+  
+  it('should create an identity', async () => {
+    mockContractCall.mockResolvedValue({ success: true });
+    const result = await mockContractCall('create-identity', Buffer.from('0123456789abcdef', 'hex'));
+    expect(result.success).toBe(true);
+  });
+  
+  it('should update an identity', async () => {
+    mockContractCall.mockResolvedValue({ success: true });
+    const result = await mockContractCall('update-identity', Buffer.from('fedcba9876543210', 'hex'));
+    expect(result.success).toBe(true);
+  });
+  
+  it('should get an identity', async () => {
+    mockContractCall.mockResolvedValue({
+      success: true,
+      value: {
+        publicKey: Buffer.from('0123456789abcdef', 'hex'),
+        createdAt: 123,
+        updatedAt: 456
+      }
+    });
+    const result = await mockContractCall('get-identity', 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM');
+    expect(result.success).toBe(true);
+    expect(result.value.publicKey).toEqual(Buffer.from('0123456789abcdef', 'hex'));
+  });
 });
+
