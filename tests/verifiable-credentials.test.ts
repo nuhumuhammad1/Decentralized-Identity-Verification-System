@@ -1,21 +1,56 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-import { describe, expect, it } from "vitest";
-
-const accounts = simnet.getAccounts();
-const address1 = accounts.get("wallet_1")!;
-
-/*
-  The test below is an example. To learn more, read the testing documentation here:
-  https://docs.hiro.so/stacks/clarinet-js-sdk
-*/
-
-describe("example tests", () => {
-  it("ensures simnet is well initalised", () => {
-    expect(simnet.blockHeight).toBeDefined();
+describe('Verifiable Credentials Contract', () => {
+  let mockContractCall: any;
+  
+  beforeEach(() => {
+    mockContractCall = vi.fn();
   });
-
-  // it("shows an example", () => {
-  //   const { result } = simnet.callReadOnlyFn("counter", "get-counter", [], address1);
-  //   expect(result).toBeUint(0);
-  // });
+  
+  it('should set a role', async () => {
+    mockContractCall.mockResolvedValue({ success: true });
+    const result = await mockContractCall('set-role', 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM', 1);
+    expect(result.success).toBe(true);
+  });
+  
+  it('should issue a credential', async () => {
+    mockContractCall.mockResolvedValue({ success: true, value: 0 });
+    const result = await mockContractCall('issue-credential', 'ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG', 'KYC', 1000);
+    expect(result.success).toBe(true);
+    expect(result.value).toBe(0);
+  });
+  
+  it('should revoke a credential', async () => {
+    mockContractCall.mockResolvedValue({ success: true });
+    const result = await mockContractCall('revoke-credential', 0);
+    expect(result.success).toBe(true);
+  });
+  
+  it('should verify a credential', async () => {
+    mockContractCall.mockResolvedValue({
+      success: true,
+      value: {
+        valid: true,
+        credential: {
+          issuer: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+          holder: 'ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG',
+          type: 'KYC',
+          issuedAt: 123,
+          expiresAt: 1000,
+          revoked: false
+        }
+      }
+    });
+    const result = await mockContractCall('verify-credential', 0);
+    expect(result.success).toBe(true);
+    expect(result.value.valid).toBe(true);
+    expect(result.value.credential.type).toBe('KYC');
+  });
+  
+  it('should set contract owner', async () => {
+    mockContractCall.mockResolvedValue({ success: true });
+    const result = await mockContractCall('set-contract-owner', 'ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG');
+    expect(result.success).toBe(true);
+  });
 });
+

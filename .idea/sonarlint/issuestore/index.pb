@@ -9,3 +9,5 @@ V
 &tests/financial-access-control.test.ts,3/6/36ca4ae476ac064ff20484189ac49e1548eb6cec
 U
 %contracts/verifiable-credentials.clar,3/f/3f901d883734578346aaacf08c6394ae675f109d
+T
+$tests/verifiable-credentials.test.ts,9/9/995ce3df503567cf21f2b2a49986a2a40c5ca023
